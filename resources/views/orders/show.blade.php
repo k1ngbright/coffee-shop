@@ -25,7 +25,8 @@
     <div class="detail-grid">
         {{-- Items --}}
         <div class="detail-card">
-            <div class="card-title">🛒 รายการสินค้า ({{ $order->items->count() }} รายการ)</div>
+            {{-- 🛠️ แก้ไข: ดึงผ่าน orderItems --}}
+            <div class="card-title">🛒 รายการสินค้า ({{ $order->orderItems->count() }} รายการ)</div>
             <table class="items-table">
                 <thead>
                     <tr>
@@ -37,19 +38,16 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach($order->items as $index => $item)
+                    {{-- 🛠️ แก้ไข: เปลี่ยนมาลูปผ่าน orderItems --}}
+                    @foreach($order->orderItems as $index => $item)
                         <tr>
                             <td style="color: var(--coffee-400);">{{ $index + 1 }}</td>
                             <td>
-                                <div class="item-name">{{ $item->product->name }}</div>
+                                <div class="item-name">{{ optional($item->product)->name }}</div>
                                 <div class="item-options">
                                     <span class="item-option-tag">🍯 {{ $item->sweetness_level }}</span>
                                     @if($item->temperature)
                                         <span class="item-option-tag">
-                                            @if($item->temperature === 'ร้อน') 
-                                            @elseif($item->temperature === 'เย็น') 
-                                            @else 
-                                            @endif
                                             {{ $item->temperature }}
                                         </span>
                                     @endif
@@ -75,9 +73,10 @@
                 <div class="card-body">
                     <div class="summary-row">
                         <span>ยอดรวม</span>
-                        <span>฿{{ number_format($order->subtotal, 2) }}</span>
+                        {{-- 🛠️ แก้ไข: กรณีไม่มีฟิลด์ย่อย ให้ใช้ราคาตั้งต้นมาคิดราคา --}}
+                        <span>฿{{ number_format($order->orderItems->sum('subtotal'), 2) }}</span>
                     </div>
-                    @if($order->discount_amount > 0)
+                    @if(isset($order->discount_amount) && $order->discount_amount > 0)
                         <div class="summary-row discount">
                             <span>ส่วนลด{{ $order->coupon ? ' (' . $order->coupon->code . ')' : '' }}</span>
                             <span>-฿{{ number_format($order->discount_amount, 2) }}</span>
@@ -85,7 +84,8 @@
                     @endif
                     <div class="summary-row grand-total">
                         <span>ยอดสุทธิ</span>
-                        <span>฿{{ number_format($order->total, 2) }}</span>
+                        {{-- 🛠️ แก้ไข: เปลี่ยนเป็น total_price ตามตารางฐานข้อมูล --}}
+                        <span>฿{{ number_format($order->total_price, 2) }}</span>
                     </div>
                 </div>
 

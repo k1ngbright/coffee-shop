@@ -95,10 +95,12 @@
                             </td>
                             <td>
                                 <div class="order-items-preview">
-                                    {{ $order->items->map(fn($i) => $i->product->name . ' x' . $i->quantity)->join(', ') }}
+                                    {{-- 🛠️ แก้ไข: เปลี่ยนมาดึงผ่านความสัมพันธ์ orderItems ตามที่นิยามในโมเดลของคุณ --}}
+                                    {{ $order->orderItems->map(fn($i) => optional($i->product)->name . ' x' . $i->quantity)->join(', ') }}
                                 </div>
                             </td>
-                            <td class="order-total">฿{{ number_format($order->total, 0) }}</td>
+                            {{-- 🛠️ แก้ไข: ดึงยอดเงินรวมจากฟิลด์ total_price ในตารางของคุณ --}}
+                            <td class="order-total">฿{{ number_format($order->total_price, 0) }}</td>
                             <td>
                                 <span class="badge badge-{{ $order->status_color }}">{{ $order->status_thai }}</span>
                             </td>
