@@ -3,6 +3,9 @@
 @section('title', 'จัดการเมนูร้านกาแฟ')
 
 @section('content')
+{{-- เพิ่ม Link สำหรับเรียกใช้งานไอคอนสวยๆ จาก Bootstrap Icons --}}
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
 <style>
     /* ===== COFFEE THEME CSS FOR INDEX PAGE ===== */
     .menu-manager-container {
@@ -185,32 +188,59 @@
         color: #c5221f;
     }
     
+    /* 🛠️ ปรับปรุงสไตล์กลุ่มปุ่ม Action ให้กดง่ายและสมดุลขึ้น */
     .action-buttons {
         display: flex;
-        gap: 6px;
+        gap: 8px;
+        justify-content: center;
     }
     
     .action-buttons .btn {
-        padding: 6px 12px;
-        border-radius: 6px;
+        padding: 8px 14px;
+        border-radius: 8px;
         font-size: 0.85rem;
-        font-weight: 500;
+        font-weight: 600;
         text-decoration: none;
         cursor: pointer;
         border: none;
-        transition: opacity 0.2s;
+        transition: all 0.2s ease;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px; /* ระยะห่างระหว่างไอคอนกับตัวหนังสือ */
+        box-shadow: 0 2px 4px rgba(0,0,0,0.02);
     }
     
     .action-buttons .btn:hover {
-        opacity: 0.85;
+        transform: translateY(-1px);
+        box-shadow: 0 4px 8px rgba(0,0,0,0.08);
+    }
+
+    .action-buttons .btn i {
+        font-size: 1rem; /* ขนาดของตัวไอคอน */
     }
     
-    .btn-info { background-color: #e4f2f5; color: #17a2b8; }
-    .btn-warning { background-color: #fff3cd; color: #856404; }
-    .btn-danger { background-color: #f8d7da; color: #721c24; }
+    /* คุมโทนสีปุ่มให้อ่อนลง สบายตา ไม่ฉูดฉาดเกินไป */
+    .btn-info { 
+        background-color: #e4f2f5; 
+        color: #117a8b; 
+    }
+    .btn-info:hover { background-color: #bee5eb; }
+
+    .btn-warning { 
+        background-color: #fff3cd; 
+        color: #856404; 
+    }
+    .btn-warning:hover { background-color: #ffeeba; }
+
+    .btn-danger { 
+        background-color: #f8d7da; 
+        color: #bd2130; 
+    }
+    .btn-danger:hover { background-color: #f5c6cb; }
     
     .table-empty-state {
         padding: 50px !important;
+        text-align: center;
         color: #a38974;
         font-size: 1rem;
     }
@@ -219,17 +249,85 @@
 <div class="menu-manager-container">
     <div class="menu-manager-header">
         <h2>⚙️ ระบบตั้งค่าเมนูร้านกาแฟ</h2>
-        <a href="{{ route('admin.menu.create') }}" class="btn btn-add-menu">➕ เพิ่มเมนูใหม่</a>
+        <a href="{{ route('admin.menu.create') }}" class="btn btn-add-menu">
+            <i class="bi bi-plus-circle"></i> เพิ่มเมนูใหม่
+        </a>
     </div>
 
     @if(session('success'))
         <div class="alert alert-success">
-            {{ session('success') }}
+            🎉 {{ session('success') }}
         </div>
     @endif
 
-    {{-- 🛠️ แก้ไขพาร์ทตรงนี้: เปลี่ยนจาก 'partials.table' เป็นพาร์ทจริงที่อยู่ในโฟลเดอร์ย่อยของคุณครับ --}}
-    @include('admin.menu.partials.table')
+    <div class="table-card">
+        <div class="table-responsive">
+            <table class="menu-table">
+                <thead>
+                    <tr>
+                        <th style="width: 80px; text-align: center;">รูปภาพ</th>
+                        <th>ชื่อเมนู / รายละเอียด</th>
+                        <th>หมวดหมู่</th>
+                        <th>ราคา</th>
+                        <th>สถานะ</th>
+                        <th style="width: 280px; text-align: center;">จัดการ</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @forelse($products as $product)
+                        <tr id="row-{{ $product->id }}">
+                            <td style="text-align: center;">
+                                @if($product->image)
+                                    <img src="{{ asset('storage/' . $product->image) }}" class="menu-img-preview" alt="{{ $product->name }}">
+                                @else
+                                    <div class="menu-no-img">No Img</div>
+                                @endif
+                            </td>
+                            <td>
+                                <a href="{{ route('admin.menu.show', $product->id) }}" class="menu-link-name">
+                                    {{ $product->name }}
+                                </a>
+                                <p class="menu-desc-short">{{ $product->description ?? 'ไม่มีคำอธิบายเมนูนี้' }}</p>
+                            </td>
+                            <td>
+                                <span class="badge-category">{{ $product->category }}</span>
+                            </td>
+                            <td>
+                                <span class="menu-price-text">{{ number_format($product->price, 2) }} ฿</span>
+                            </td>
+                            <td>
+                                @if($product->is_available == 1)
+                                    <span class="status-badge available">พร้อมขาย</span>
+                                @else
+                                    <span class="status-badge unavailable">หมดชั่วคราว</span>
+                                @endif
+                            </td>
+                            <td>
+                                {{-- ปุ่ม Action รูปแบบใหม่ ขยายใหญ่ มีไอคอนและข้อความชัดเจน --}}
+                                <div class="action-buttons">
+                                    <a href="{{ route('admin.menu.show', $product->id) }}" class="btn btn-info" title="ดูรายละเอียด">
+                                         ดูข้อมูล
+                                    </a>
+                                    <a href="{{ route('admin.menu.edit', $product->id) }}" class="btn btn-warning" title="แก้ไข">
+                                       แก้ไข
+                                    </a>
+                                    <button type="button" class="btn btn-danger" onclick="deleteMenu({{ $product->id }})" title="ลบ">
+                                       ลบ
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                    @empty
+                        <tr>
+                            <td colspan="6" class="table-empty-state">
+                                ☕ ยังไม่มีข้อมูลเมนูในร้านกาแฟของคุณ กดปุ่ม "เพิ่มเมนูใหม่" ด้านบนเพื่อเริ่มเพิ่มสินค้าได้เลย
+                            </td>
+                        </tr>
+                    @endforelse
+                </tbody>
+            </table>
+        </div>
+    </div>
 
 </div>
 
@@ -243,7 +341,7 @@ function deleteMenu(id) {
         text: "รายการนี้จะถูกถอดออกจากระบบและหน้า POS ทันที!",
         icon: 'warning',
         showCancelButton: true,
-        confirmButtonColor: '#6f4e37', // คุมโทนสีน้ำตาลกาแฟเข้มเข้าธีมคุณ
+        confirmButtonColor: '#6f4e37', 
         cancelButtonColor: '#d33',
         confirmButtonText: 'ใช่, ลบเลย!',
         cancelButtonText: 'ยกเลิก'

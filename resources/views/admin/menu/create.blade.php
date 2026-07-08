@@ -1,264 +1,272 @@
 @extends('layouts.app') {{-- 🛠️ เปลี่ยนเป็นชื่อ Layout หลักของธีมคุณ เช่น layouts.admin --}}
 
-@section('title', 'จัดการเมนูร้านกาแฟ')
+@section('title', 'เพิ่มเมนูใหม่')
 
 @section('content')
 <style>
-    /* ===== COFFEE THEME CSS FOR INDEX PAGE ===== */
-    .menu-manager-container {
-        max-width: 1140px;
+    /* ===== COFFEE THEME CSS FOR CREATE PAGE ===== */
+    .menu-create-container {
+        max-width: 700px;
         margin: 40px auto;
         padding: 0 20px;
         font-family: 'Sarabun', sans-serif;
     }
     
-    .menu-manager-header {
+    .menu-create-header {
         display: flex;
-        justify-content: space-between;
         align-items: center;
-        margin-bottom: 30px;
+        gap: 10px;
+        margin-bottom: 25px;
         padding-bottom: 15px;
         border-bottom: 2px solid #e8dfd8;
     }
     
-    .menu-manager-header h2 {
+    .menu-create-header h2 {
         color: #4a3423;
-        font-size: 1.6rem;
+        font-size: 1.5rem;
         margin: 0;
         font-weight: 600;
     }
-    
-    .btn-add-menu {
-        background-color: #6f4e37;
-        color: #ffffff !important;
-        padding: 10px 20px;
-        border-radius: 8px;
-        text-decoration: none;
-        font-weight: bold;
-        font-size: 0.95rem;
-        transition: all 0.3s ease;
-        box-shadow: 0 4px 6px rgba(111, 78, 55, 0.15);
-        display: inline-flex;
-        align-items: center;
-        gap: 5px;
-    }
-    
-    .btn-add-menu:hover {
-        background-color: #523928;
-        transform: translateY(-2px);
-        box-shadow: 0 6px 12px rgba(111, 78, 55, 0.25);
-    }
-    
-    .alert-success {
-        background-color: #f4ebe1;
-        border: 1px solid #dfcfbe;
-        color: #6f4e37;
-        padding: 12px 20px;
-        border-radius: 8px;
-        margin-bottom: 25px;
-        font-weight: 500;
-        display: inline-block;
-        width: auto;
-    }
-    
-    .table-card {
+
+    .form-card {
         background: #ffffff;
         border-radius: 12px;
         box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
         border: 1px solid #f0e6dd;
-        overflow: hidden;
+        padding: 30px;
     }
-    
-    .table-responsive {
-        width: 100%;
-        overflow-x: auto;
+
+    .form-group {
+        margin-bottom: 20px;
     }
-    
-    .menu-table {
-        width: 100%;
-        border-collapse: collapse;
-        text-align: left;
-    }
-    
-    .menu-table th {
-        background-color: #fcf9f6;
-        color: #6f4e37;
+
+    .form-group label {
+        display: block;
+        color: #4a3423;
         font-weight: 600;
-        padding: 16px;
-        font-size: 0.95rem;
-        border-bottom: 2px solid #e8dfd8;
-    }
-    
-    .menu-table td {
-        padding: 16px;
-        vertical-align: middle;
-        border-bottom: 1px solid #f5eee6;
-        color: #4a4a4a;
+        margin-bottom: 8px;
         font-size: 0.95rem;
     }
-    
-    .menu-table tbody tr {
-        transition: background-color 0.2s ease;
-    }
-    
-    .menu-table tbody tr:hover {
-        background-color: #faf6f0;
-    }
-    
-    .menu-img-preview {
-        width: 60px;
-        height: 60px;
-        object-fit: cover;
+
+    .form-control {
+        width: 100%;
+        padding: 10px 14px;
+        border: 1px solid #dfcfbe;
         border-radius: 8px;
-        border: 1px solid #e8dfd8;
-        box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        font-size: 0.95rem;
+        color: #4a4a4a;
+        background-color: #fdfbf9;
+        box-sizing: border-box;
+        transition: all 0.3s ease;
+    }
+
+    .form-control:focus {
+        outline: none;
+        border-color: #6f4e37;
+        background-color: #ffffff;
+        box-shadow: 0 0 0 3px rgba(111, 78, 55, 0.1);
+    }
+
+    select.form-control {
+        appearance: none;
+        background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%236f4e37' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+        background-repeat: no-repeat;
+        background-position: right 14px center;
+        background-size: 16px;
+        padding-right: 40px;
+    }
+
+    .input-group-text {
+        position: absolute;
+        right: 14px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: #a38974;
+        font-weight: bold;
+    }
+
+    .text-danger {
+        color: #c5221f;
+        font-size: 0.85rem;
+        margin-top: 5px;
         display: block;
     }
-    
-    .menu-no-img {
-        width: 60px;
-        height: 60px;
-        background: #f7f2ed;
+
+    .form-actions {
+        display: flex;
+        justify-content: flex-end;
+        gap: 12px;
+        margin-top: 30px;
+        padding-top: 20px;
+        border-top: 1px solid #f5eee6;
+    }
+
+    .btn {
+        padding: 10px 24px;
         border-radius: 8px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        color: #a38974;
-        font-size: 0.8rem;
-        font-weight: 500;
-        border: 1px dashed #dfcfbe;
-    }
-    
-    .menu-link-name {
-        color: #4a3423;
-        text-decoration: none;
-        font-weight: 600;
-        font-size: 1.05rem;
-        transition: color 0.2s;
-    }
-    
-    .menu-link-name:hover {
-        color: #c59b27;
-    }
-    
-    .menu-desc-short {
-        margin: 4px 0 0 0;
-        font-size: 0.85rem;
-        color: #8c8c8c;
-        display: -webkit-box;
-        -webkit-line-clamp: 1;
-        -webkit-box-orient: vertical;
-        overflow: hidden;
-    }
-    
-    .badge-category {
-        background-color: #f3ece6;
-        color: #8c6239;
-        padding: 4px 12px;
-        border-radius: 20px;
-        font-size: 0.8rem;
-        font-weight: 600;
-        display: inline-block;
-    }
-    
-    .menu-price-text {
         font-weight: bold;
-        color: #6f4e37;
-        font-size: 1.05rem;
-    }
-    
-    .status-badge {
-        padding: 4px 10px;
-        border-radius: 6px;
-        font-size: 0.8rem;
-        font-weight: 600;
-        display: inline-block;
-    }
-    
-    .status-badge.available {
-        background-color: #e6f4ea;
-        color: #137333;
-    }
-    
-    .status-badge.unavailable {
-        background-color: #fce8e6;
-        color: #c5221f;
-    }
-    
-    .action-buttons {
-        display: flex;
-        gap: 6px;
-    }
-    
-    .action-buttons .btn {
-        padding: 6px 12px;
-        border-radius: 6px;
-        font-size: 0.85rem;
-        font-weight: 500;
+        font-size: 0.95rem;
         text-decoration: none;
         cursor: pointer;
         border: none;
-        transition: opacity 0.2s;
+        transition: all 0.3s ease;
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
     }
-    
-    .action-buttons .btn:hover {
-        opacity: 0.85;
+
+    .btn-cancel {
+        background-color: #f4ece6;
+        color: #8c6239;
     }
-    
-    .btn-info { background-color: #e4f2f5; color: #17a2b8; }
-    .btn-warning { background-color: #fff3cd; color: #856404; }
-    .btn-danger { background-color: #f8d7da; color: #721c24; }
-    
-    .table-empty-state {
-        padding: 50px !important;
-        color: #a38974;
-        font-size: 1rem;
+
+    .btn-cancel:hover {
+        background-color: #e8dfd8;
+    }
+
+    .btn-submit {
+        background-color: #6f4e37;
+        color: #ffffff;
+        box-shadow: 0 4px 6px rgba(111, 78, 55, 0.15);
+    }
+
+    .btn-submit:hover {
+        background-color: #523928;
+        transform: translateY(-1px);
+        box-shadow: 0 6px 12px rgba(111, 78, 55, 0.25);
+    }
+
+    /* สไตล์ตัวอัปโหลดรูปภาพ */
+    .file-preview-box {
+        margin-top: 10px;
+        display: none;
+    }
+    .file-preview-box img {
+        max-width: 150px;
+        border-radius: 8px;
+        border: 1px solid #dfcfbe;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    }
+
+    /* สไตล์สำหรับปุ่ม Checkbox สลับเปิด-ปิด */
+    .switch-container {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        cursor: pointer;
+        user-select: none;
+    }
+    .switch-text {
+        font-size: 0.95rem;
+        color: #4a3423;
+        font-weight: 500;
     }
 </style>
 
-<div class="menu-manager-container">
-    <div class="menu-manager-header">
-        <h2>⚙️ ระบบตั้งค่าเมนูร้านกาแฟ</h2>
-        <a href="{{ route('admin.menu.create') }}" class="btn btn-add-menu">➕ เพิ่มเมนูใหม่</a>
+<div class="menu-create-container">
+    <div class="menu-create-header">
+        <h2>➕ เพิ่มเมนูร้านกาแฟใหม่</h2>
     </div>
 
-    @if(session('success'))
-        <div class="alert alert-success">
-            {{ session('success') }}
-        </div>
-    @endif
+    {{-- ฟอร์มการสร้างเมนู --}}
+    <form action="{{ route('admin.menu.store') }}" method="POST" enctype="multipart/form-data" class="form-card">
+        @csrf
 
+        {{-- 1. ชื่อเมนู --}}
+        <div class="form-group">
+            <label for="name">ชื่อเมนู <span style="color: red;">*</span></label>
+            <input type="text" name="name" id="name" class="form-control" placeholder="เช่น เอสเพรสโซ่เย็น, เค้กช็อกโกแลต" value="{{ old('name') }}" required>
+            @error('name')
+                <span class="text-danger">⚠️ {{ $message }}</span>
+            @enderror
+        </div>
+
+        {{-- 2. หมวดหมู่สินค้า (วนลูปดึงตามอาร์เรย์จาก Controller เพื่อความยืดหยุ่น) --}}
+        <div class="form-group">
+            <label for="category">หมวดหมู่ <span style="color: red;">*</span></label>
+            <select name="category" id="category" class="form-control" required>
+                <option value="" disabled selected>-- เลือกหมวดหมู่เมนู --</option>
+                @foreach($categories as $cat)
+                    <option value="{{ $cat }}" {{ old('category') == $cat ? 'selected' : '' }}>
+                        {{ $cat }}
+                    </option>
+                @endforeach
+            </select>
+            @error('category')
+                <span class="text-danger">⚠️ {{ $message }}</span>
+            @enderror
+        </div>
+
+        {{-- 3. ราคา --}}
+        <div class="form-group">
+            <label for="price">ราคาขาย (บาท) <span style="color: red;">*</span></label>
+            <div style="position: relative;">
+                <input type="number" name="price" id="price" class="form-control" placeholder="0.00" step="0.01" min="0" value="{{ old('price') }}" required>
+                <span class="input-group-text">฿</span>
+            </div>
+            @error('price')
+                <span class="text-danger">⚠️ {{ $message }}</span>
+            @enderror
+        </div>
+
+        {{-- 4. คำอธิบายรายละเอียดเมนู --}}
+        <div class="form-group">
+            <label for="description">รายละเอียดเมนู</label>
+            <textarea name="description" id="description" class="form-control" rows="4" placeholder="ระบุรายละเอียด เช่น ความเข้มข้น เมล็ดกาแฟที่ใช้ หรือระดับความหวาน..." style="resize: vertical;">{{ old('description') }}</textarea>
+            @error('description')
+                <span class="text-danger">⚠️ {{ $message }}</span>
+            @enderror
+        </div>
+
+        {{-- 5. อัปโหลดรูปภาพสินค้า --}}
+        <div class="form-group">
+            <label for="image">รูปภาพเมนู</label>
+            <input type="file" name="image" id="image" class="form-control" accept="image/*" onchange="previewImage(this)">
+            @error('image')
+                <span class="text-danger">⚠️ {{ $message }}</span>
+            @enderror
+            
+            {{-- ตัวแสดงผลตัวอย่างรูปภาพเมื่อเลือกไฟล์ --}}
+            <div class="file-preview-box" id="preview-box">
+                <p style="font-size: 0.85rem; color: #a38974; margin: 5px 0;">ตัวอย่างรูปภาพ:</p>
+                <img id="image-render" src="#" alt="Preview">
+            </div>
+        </div>
+
+        {{-- 6. สถานะพร้อมขาย (เปลี่ยนมาใช้ตัวแปร is_available ตามเงื่อนไข $request->has('is_available') ของคุณ) --}}
+        <div class="form-group" style="margin-top: 25px;">
+            <label class="switch-container">
+                <input type="checkbox" name="is_available" value="1" {{ old('is_available', '1') == '1' ? 'checked' : '' }} style="width: 18px; height: 18px; accent-color: #6f4e37; cursor: pointer;">
+                <span class="switch-text">🟢 เปิดขายเมนูนี้ทันที (Available)</span>
+            </label>
+        </div>
+
+        {{-- ปุ่มกดยืนยันหรือยกเลิก --}}
+        <div class="form-actions">
+            <a href="{{ route('admin.menu.index') }}" class="btn btn-cancel">ยกเลิก</a>
+            <button type="submit" class="btn btn-submit">💾 บันทึกเมนู</button>
+        </div>
+    </form>
 </div>
 
-{{-- ส่วนเสริมสคริปต์ลบรายการแบบไร้รอยต่อ --}}
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+{{-- สคริปต์ JavaScript โชว์ตัวอย่างรูปภาพสดทันทีหลังกดอัปโหลด --}}
 <script>
-function deleteMenu(id) {
-    Swal.fire({
-        title: 'ยืนยันการลบเมนู?',
-        text: "รายการนี้จะถูกถอดออกจากระบบและหน้า POS ทันที!",
-        icon: 'warning',
-        showCancelButton: true,
-        confirmButtonColor: '#6f4e37', // คุมโทนสีน้ำตาลกาแฟเข้มเข้าธีมคุณ
-        cancelButtonColor: '#d33',
-        confirmButtonText: 'ใช่, ลบเลย!',
-        cancelButtonText: 'ยกเลิก'
-    }).then((result) => {
-        if (result.isConfirmed) {
-            $.ajax({
-                url: '/admin/menu/' + id,
-                type: 'DELETE',
-                headers: { 'X-CSRF-TOKEN': '{{ csrf_token() }}' },
-                success: function(response) {
-                    if(response.success) {
-                        Swal.fire({ title: 'ลบสำเร็จ!', text: response.message, icon: 'success', timer: 1500, showConfirmButton: false });
-                        $('#row-' + id).fadeOut(500, function() { $(this).remove(); });
-                    }
-                }
-            });
+function previewImage(input) {
+    const previewBox = document.getElementById('preview-box');
+    const imageRender = document.getElementById('image-render');
+    
+    if (input.files && input.files[0]) {
+        const reader = new FileReader();
+        
+        reader.onload = function(e) {
+            imageRender.src = e.target.result;
+            previewBox.style.display = 'block';
         }
-    })
+        
+        reader.readAsDataURL(input.files[0]);
+    } else {
+        previewBox.style.display = 'none';
+    }
 }
 </script>
 @endsection
