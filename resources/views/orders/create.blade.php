@@ -77,8 +77,7 @@
         </div>
 
         <div class="cart-items" id="cartItems">
-            <div class="cart-empty" id="cartEmpty">
-                <span class="empty-icon">🛒</span>
+            <div class="cart-empty" id="cartEmpty" style="margin-top: 50px; text-align: center;">
                 <p>ยังไม่มีสินค้าในตะกร้า<br><span style="font-size: 0.8rem; color: var(--coffee-300)">คลิกที่เมนูเพื่อเพิ่มสินค้า</span></p>
             </div>
         </div>
@@ -89,8 +88,8 @@
                 <button class="customer-toggle" onclick="toggleCustomer()" type="button">
                     👤 ข้อมูลลูกค้า (ไม่บังคับ) <span id="customerArrow">▸</span>
                 </button>
-                <div class="customer-fields" id="customerFields">
-                    <input type="text" class="input-field" id="customerName" placeholder="ชื่อลูกค้า">
+                <div class="customer-fields" id="customerFields" {!! auth()->check() ? 'style="display: block;"' : '' !!}>
+                    <input type="text" class="input-field" id="customerName" placeholder="ชื่อลูกค้า" value="{{ auth()->check() ? auth()->user()->name : '' }}">
                     <input type="text" class="input-field" id="customerPhone" placeholder="เบอร์โทร">
                 </div>
             </div>
@@ -197,27 +196,40 @@
     // ===== UPDATE CART UI =====
     function updateCart() {
         const itemsContainer = document.getElementById('cartItems');
-        const emptyEl = document.getElementById('cartEmpty');
         const footerEl = document.getElementById('cartFooter');
         const countEl = document.getElementById('cartCount');
         const clearBtn = document.getElementById('clearCartBtn');
 
         const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
-        countEl.textContent = totalItems;
+        if(countEl) countEl.textContent = totalItems;
+        
+        // Sync with navbar badge
+        const navBadge = document.getElementById('navCartCount');
+        if (navBadge) navBadge.textContent = totalItems;
+        
+        // Save to localStorage
+        localStorage.setItem('coffee_shop_cart', JSON.stringify(cart));
 
+        // แก้บั๊กตรงนี้: หากไม่มีสินค้า ให้สร้าง HTML ความว่างเปล่าขึ้นมาใหม่
         if (cart.length === 0) {
-            emptyEl.style.display = '';
-            footerEl.style.display = 'none';
-            clearBtn.style.display = 'none';
-            itemsContainer.innerHTML = emptyEl.outerHTML;
-            document.getElementById('submitBtn').disabled = true;
+            if(footerEl) footerEl.style.display = 'none';
+            if(clearBtn) clearBtn.style.display = 'none';
+            
+            itemsContainer.innerHTML = `
+                <div class="cart-empty" id="cartEmpty" style="margin-top: 50px; text-align: center;">
+                    <p>ยังไม่มีสินค้าในตะกร้า<br><span style="font-size: 0.8rem; color: var(--coffee-300)">คลิกที่เมนูเพื่อเพิ่มสินค้า</span></p>
+                </div>
+            `;
+            
+            const submitBtn = document.getElementById('submitBtn');
+            if(submitBtn) submitBtn.disabled = true;
             return;
         }
 
-        emptyEl.style.display = 'none';
-        footerEl.style.display = '';
-        clearBtn.style.display = '';
-        document.getElementById('submitBtn').disabled = false;
+        if(footerEl) footerEl.style.display = '';
+        if(clearBtn) clearBtn.style.display = '';
+        const submitBtn = document.getElementById('submitBtn');
+        if(submitBtn) submitBtn.disabled = false;
 
         let html = '';
         cart.forEach((item, index) => {
@@ -391,12 +403,25 @@
         });
     }
 
-    // Sync customer name/phone on change
+    // Sync customer name/phone on change and init cart
     document.addEventListener('DOMContentLoaded', () => {
         const nameInput = document.getElementById('customerName');
         const phoneInput = document.getElementById('customerPhone');
         if (nameInput) nameInput.addEventListener('input', updateFormData);
         if (phoneInput) phoneInput.addEventListener('input', updateFormData);
+        
+        // Load cart from localStorage
+        const storedCart = localStorage.getItem('coffee_shop_cart');
+        if (storedCart) {
+            try {
+                cart = JSON.parse(storedCart);
+                if (cart.length > 0) {
+                    updateCart();
+                }
+            } catch (e) {
+                cart = [];
+            }
+        }
     });
 
     // Submit form — update form data first
@@ -405,6 +430,9 @@
         if (cart.length === 0) {
             e.preventDefault();
             alert('กรุณาเพิ่มสินค้าลงตะกร้า');
+        } else {
+            // Clear localStorage upon successful submission
+            localStorage.removeItem('coffee_shop_cart');
         }
     });
 </script>
