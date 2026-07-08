@@ -15,6 +15,7 @@
             <div class="category-tabs">
                 <button class="category-tab active" onclick="filterCategory('all', this)">🍽️ ทั้งหมด</button>
                 @foreach($categories as $cat)
+                    {{-- 🛠️ แก้ไข: เปลี่ยนจาก $cat->name เป็น $cat ตรงๆ เนื่องจากดึงผ่าน Array ข้อความของตาราง menus แล้ว --}}
                     <button class="category-tab" onclick="filterCategory('{{ $cat }}', this)">
                         @if($cat === 'กาแฟ') ☕
                         @elseif($cat === 'ชา') 🍵
@@ -31,24 +32,38 @@
         <div class="menu-grid-wrapper">
             <div class="menu-grid" id="menuGrid">
                 @foreach($products as $product)
-                    <div class="product-card"
-                         data-category="{{ $product->category }}"
-                         data-id="{{ $product->id }}"
-                         data-name="{{ $product->name }}"
-                         data-price="{{ $product->price }}"
-                         onclick="addToCart({{ $product->id }}, '{{ addslashes($product->name) }}', {{ $product->price }}, this)">
-                        <span class="product-category-badge">{{ $product->category }}</span>
-                        <span class="product-emoji">
-                            @if($product->category === 'กาแฟ') ☕
-                            @elseif($product->category === 'ชา') 🍵
-                            @elseif($product->category === 'เครื่องดื่มอื่นๆ') 🧋
-                            @elseif($product->category === 'เบเกอรี่') 🍞
-                            @else 🍽️
-                            @endif
-                        </span>
-                        <div class="product-name">{{ $product->name }}</div>
-                        <div class="product-price">฿{{ number_format($product->price, 0) }}</div>
-                    </div>
+                    {{-- 🛠️ ตรวจสอบสถานะ: แสดงเฉพาะสินค้าที่พร้อมขาย (is_available == 1) --}}
+                    @if($product->is_available)
+                        {{-- 🛠️ แก้ไข: เปลี่ยนจาก $product->category->name เป็น $product->category สตริงตรงๆ ตามสเปกตาราง menus --}}
+                        <div class="product-card"
+                             data-category="{{ $product->category }}"
+                             data-id="{{ $product->id }}"
+                             data-name="{{ $product->name }}"
+                             data-price="{{ $product->price }}"
+                             onclick="addToCart({{ $product->id }}, '{{ addslashes($product->name) }}', {{ $product->price }}, this)">
+                            
+                            <span class="product-category-badge">{{ $product->category }}</span>
+                            
+                            {{-- 🛠️ แสดงรูปภาพจริงที่เพิ่งอัปโหลดผ่านระบบจัดการเมนู หากเมนูไหนไม่มีรูปจะดึง Emoji ขึ้นมาแทน --}}
+                            <div class="product-image-box" style="width: 100%; height: 120px; display: flex; align-items: center; justify-content: center; overflow: hidden; border-radius: 8px; background: #f7f2ed;">
+                                @if($product->image)
+                                    <img src="{{ asset('storage/' . $product->image) }}" alt="{{ $product->name }}" style="width: 100%; height: 100%; object-fit: cover;">
+                                @else
+                                    <span class="product-emoji" style="font-size: 3rem;">
+                                        @if($product->category === 'กาแฟ') ☕
+                                        @elseif($product->category === 'ชา') 🍵
+                                        @elseif($product->category === 'เครื่องดื่มอื่นๆ') 🧋
+                                        @elseif($product->category === 'เบเกอรี่') 🍞
+                                        @else 🍽️
+                                        @endif
+                                    </span>
+                                @endif
+                            </div>
+
+                            <div class="product-name" style="margin-top: 10px; font-weight: 600;">{{ $product->name }}</div>
+                            <div class="product-price">฿{{ number_format($product->price, 0) }}</div>
+                        </div>
+                    @endif
                 @endforeach
             </div>
         </div>
