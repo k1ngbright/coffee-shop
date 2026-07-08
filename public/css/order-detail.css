@@ -1,0 +1,177 @@
+/* =============================================
+   Coffee Shop — Order Detail / Show Styles
+   ============================================= */
+
+.order-detail-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    margin-bottom: 1.5rem;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+.order-detail-header h1 {
+    font-size: 1.5rem;
+    font-weight: 800;
+    color: var(--coffee-900);
+}
+
+.order-detail-header .order-meta {
+    font-size: 0.85rem;
+    color: var(--coffee-500);
+    margin-top: 0.25rem;
+}
+
+.header-actions {
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+}
+
+/* Cards */
+.detail-grid {
+    display: grid;
+    grid-template-columns: 1fr 380px;
+    gap: 1.5rem;
+}
+
+.detail-card {
+    background: white;
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow);
+    overflow: hidden;
+    border: 1px solid var(--coffee-100);
+}
+
+.card-title {
+    padding: 1rem 1.25rem;
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--coffee-900);
+    border-bottom: 1px solid var(--coffee-100);
+    background: linear-gradient(135deg, var(--coffee-50), white);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.card-body {
+    padding: 1.25rem;
+}
+
+/* Order Items Table */
+.items-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.items-table thead th {
+    padding: 0.625rem 0.875rem;
+    text-align: left;
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--coffee-400);
+    border-bottom: 1px solid var(--coffee-100);
+}
+
+.items-table tbody td {
+    padding: 0.875rem;
+    font-size: 0.85rem;
+    border-bottom: 1px solid var(--coffee-50);
+    vertical-align: top;
+}
+
+.items-table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+.item-name {
+    font-weight: 600;
+    color: var(--coffee-900);
+}
+
+.item-options {
+    display: flex;
+    gap: 0.375rem;
+    margin-top: 0.35rem;
+    flex-wrap: wrap;
+}
+
+.item-option-tag {
+    font-size: 0.7rem;
+    padding: 0.15rem 0.5rem;
+    border-radius: var(--radius-full);
+    background: var(--coffee-100);
+    color: var(--coffee-700);
+    font-weight: 500;
+}
+
+.item-note {
+    font-size: 0.75rem;
+    color: var(--coffee-400);
+    font-style: italic;
+    margin-top: 0.25rem;
+}
+
+.item-subtotal {
+    font-weight: 700;
+    color: var(--coffee-800);
+    white-space: nowrap;
+}
+
+/* Summary card */
+.summary-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 0.5rem 0;
+    font-size: 0.9rem;
+    color: var(--coffee-700);
+}
+
+.summary-row.discount { color: var(--success); }
+
+.summary-row.grand-total {
+    font-size: 1.2rem;
+    font-weight: 800;
+    color: var(--coffee-900);
+    padding-top: 0.75rem;
+    margin-top: 0.5rem;
+    border-top: 2px solid var(--coffee-200);
+}
+
+/* Info rows */
+.info-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 0.5rem 0;
+    font-size: 0.85rem;
+    border-bottom: 1px solid var(--coffee-50);
+}
+.info-row:last-child { border-bottom: none; }
+
+.info-label {
+    color: var(--coffee-500);
+    font-weight: 500;
+}
+.info-value {
+    color: var(--coffee-900);
+    font-weight: 600;
+}
+
+/* Status change section */
+.status-change-section {
+    padding: 1rem 1.25rem;
+    border-top: 1px solid var(--coffee-100);
+    background: var(--coffee-50);
+    display: flex;
+    gap: 0.5rem;
+}
+
+@media (max-width: 900px) {
+    .detail-grid {
+        grid-template-columns: 1fr;
+    }
+}

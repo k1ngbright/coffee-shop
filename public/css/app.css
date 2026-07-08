@@ -1,0 +1,260 @@
+/* =============================================
+   Coffee Shop — Base / Layout Styles
+   ============================================= */
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+    --coffee-50: #fdf8f0;
+    --coffee-100: #f5ead6;
+    --coffee-200: #edd5ad;
+    --coffee-300: #e0b87a;
+    --coffee-400: #d4994d;
+    --coffee-500: #c47f2f;
+    --coffee-600: #a86625;
+    --coffee-700: #8b4d20;
+    --coffee-800: #6e3a1e;
+    --coffee-900: #4a2714;
+    --coffee-950: #2d180c;
+
+    --cream: #faf6f0;
+    --cream-dark: #f0e8da;
+    --espresso: #2d1b0e;
+    --latte: #d4a574;
+
+    --success: #10b981;
+    --warning: #f59e0b;
+    --danger: #ef4444;
+    --info: #3b82f6;
+
+    --shadow-sm: 0 1px 2px 0 rgba(45, 27, 14, 0.05);
+    --shadow: 0 1px 3px 0 rgba(45, 27, 14, 0.1), 0 1px 2px -1px rgba(45, 27, 14, 0.1);
+    --shadow-md: 0 4px 6px -1px rgba(45, 27, 14, 0.1), 0 2px 4px -2px rgba(45, 27, 14, 0.1);
+    --shadow-lg: 0 10px 15px -3px rgba(45, 27, 14, 0.1), 0 4px 6px -4px rgba(45, 27, 14, 0.1);
+    --shadow-xl: 0 20px 25px -5px rgba(45, 27, 14, 0.1), 0 8px 10px -6px rgba(45, 27, 14, 0.1);
+
+    --radius-sm: 8px;
+    --radius: 12px;
+    --radius-lg: 16px;
+    --radius-xl: 20px;
+    --radius-full: 9999px;
+}
+
+body {
+    font-family: 'Inter', 'Noto Sans Thai', -apple-system, sans-serif;
+    background: var(--cream);
+    color: var(--espresso);
+    line-height: 1.6;
+    min-height: 100vh;
+    -webkit-font-smoothing: antialiased;
+}
+
+/* ===== NAVBAR ===== */
+.navbar {
+    background: linear-gradient(135deg, var(--coffee-900) 0%, var(--coffee-800) 100%);
+    padding: 0 1.5rem;
+    height: 64px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: 0 4px 20px rgba(45, 27, 14, 0.3);
+}
+
+.navbar-brand {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    text-decoration: none;
+    color: var(--coffee-100);
+    font-weight: 700;
+    font-size: 1.25rem;
+}
+
+.navbar-brand .logo {
+    font-size: 1.75rem;
+}
+
+.navbar-nav {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+    list-style: none;
+}
+
+.nav-link {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 1rem;
+    border-radius: var(--radius);
+    text-decoration: none;
+    color: var(--coffee-300);
+    font-weight: 500;
+    font-size: 0.9rem;
+    transition: all 0.2s ease;
+}
+
+.nav-link:hover {
+    color: white;
+    background: rgba(255,255,255,0.1);
+}
+
+.nav-link.active {
+    color: white;
+    background: rgba(255,255,255,0.15);
+}
+
+/* ===== MAIN ===== */
+.main-content {
+    padding: 1.5rem;
+    max-width: 1600px;
+    margin: 0 auto;
+}
+
+/* ===== FLASH MESSAGES ===== */
+.flash-message {
+    padding: 1rem 1.25rem;
+    border-radius: var(--radius);
+    margin-bottom: 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    font-weight: 500;
+    animation: slideDown 0.3s ease;
+}
+
+.flash-success {
+    background: #ecfdf5;
+    color: #065f46;
+    border: 1px solid #a7f3d0;
+}
+
+.flash-error {
+    background: #fef2f2;
+    color: #991b1b;
+    border: 1px solid #fecaca;
+}
+
+@keyframes slideDown {
+    from { opacity: 0; transform: translateY(-10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* ===== BUTTONS ===== */
+.btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 0.625rem 1.25rem;
+    border-radius: var(--radius);
+    border: none;
+    font-weight: 600;
+    font-size: 0.875rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    text-decoration: none;
+    font-family: inherit;
+    line-height: 1.4;
+}
+
+.btn:active { transform: scale(0.97); }
+
+.btn-primary {
+    background: linear-gradient(135deg, var(--coffee-600) 0%, var(--coffee-700) 100%);
+    color: white;
+    box-shadow: 0 2px 8px rgba(168, 102, 37, 0.3);
+}
+.btn-primary:hover {
+    background: linear-gradient(135deg, var(--coffee-500) 0%, var(--coffee-600) 100%);
+    box-shadow: 0 4px 12px rgba(168, 102, 37, 0.4);
+}
+
+.btn-success {
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+    color: white;
+    box-shadow: 0 2px 8px rgba(16, 185, 129, 0.3);
+}
+.btn-success:hover {
+    box-shadow: 0 4px 12px rgba(16, 185, 129, 0.4);
+}
+
+.btn-danger {
+    background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+    color: white;
+    box-shadow: 0 2px 8px rgba(239, 68, 68, 0.3);
+}
+
+.btn-outline {
+    background: white;
+    color: var(--coffee-700);
+    border: 1.5px solid var(--coffee-200);
+}
+.btn-outline:hover {
+    background: var(--coffee-50);
+    border-color: var(--coffee-400);
+}
+
+.btn-ghost {
+    background: transparent;
+    color: var(--coffee-600);
+}
+.btn-ghost:hover {
+    background: var(--coffee-100);
+}
+
+.btn-sm {
+    padding: 0.375rem 0.75rem;
+    font-size: 0.8rem;
+    border-radius: var(--radius-sm);
+}
+
+.btn-lg {
+    padding: 0.875rem 1.75rem;
+    font-size: 1rem;
+}
+
+/* ===== BADGES ===== */
+.badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.25rem 0.75rem;
+    border-radius: var(--radius-full);
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.01em;
+}
+
+.badge-amber {
+    background: #fef3c7;
+    color: #92400e;
+}
+.badge-emerald {
+    background: #d1fae5;
+    color: #065f46;
+}
+.badge-red {
+    background: #fee2e2;
+    color: #991b1b;
+}
+.badge-gray {
+    background: #f3f4f6;
+    color: #374151;
+}
+
+/* ===== SCROLLBAR ===== */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--coffee-300); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: var(--coffee-400); }
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 768px) {
+    .navbar { padding: 0 1rem; }
+    .main-content { padding: 1rem; }
+    .navbar-nav { gap: 0; }
+    .nav-link { padding: 0.5rem 0.75rem; font-size: 0.8rem; }
+}
