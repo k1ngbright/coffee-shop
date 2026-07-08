@@ -189,6 +189,13 @@
 
         const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
         countEl.textContent = totalItems;
+        
+        // Sync with navbar badge
+        const navBadge = document.getElementById('navCartCount');
+        if (navBadge) navBadge.textContent = totalItems;
+        
+        // Save to localStorage
+        localStorage.setItem('coffee_shop_cart', JSON.stringify(cart));
 
         if (cart.length === 0) {
             emptyEl.style.display = '';
@@ -376,12 +383,25 @@
         });
     }
 
-    // Sync customer name/phone on change
+    // Sync customer name/phone on change and init cart
     document.addEventListener('DOMContentLoaded', () => {
         const nameInput = document.getElementById('customerName');
         const phoneInput = document.getElementById('customerPhone');
         if (nameInput) nameInput.addEventListener('input', updateFormData);
         if (phoneInput) phoneInput.addEventListener('input', updateFormData);
+        
+        // Load cart from localStorage
+        const storedCart = localStorage.getItem('coffee_shop_cart');
+        if (storedCart) {
+            try {
+                cart = JSON.parse(storedCart);
+                if (cart.length > 0) {
+                    updateCart();
+                }
+            } catch (e) {
+                cart = [];
+            }
+        }
     });
 
     // Submit form — update form data first
@@ -390,6 +410,9 @@
         if (cart.length === 0) {
             e.preventDefault();
             alert('กรุณาเพิ่มสินค้าลงตะกร้า');
+        } else {
+            // Clear localStorage upon successful submission
+            localStorage.removeItem('coffee_shop_cart');
         }
     });
 </script>

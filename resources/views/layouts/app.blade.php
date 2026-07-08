@@ -24,15 +24,18 @@
         </a>
         <ul class="navbar-nav">
             <li>
-                <a href="{{ route('orders.create') }}"
-                   class="nav-link {{ request()->routeIs('orders.create') ? 'active' : '' }}">
-                    🛒 สร้างออเดอร์
+                <a href="{{ route('orders.create') }}" class="nav-link" style="color: var(--coffee-100);">
+                    🛒 ตะกร้า <span id="navCartCount" class="badge" style="background: var(--danger); color: white; margin-left: 4px;">0</span>
                 </a>
             </li>
             <li>
-                <a href="{{ route('orders.index') }}"
-                   class="nav-link {{ request()->routeIs('orders.index') ? 'active' : '' }}">
-                    📋 รายการออเดอร์
+                <a href="{{ route('orders.index') }}" class="nav-link {{ request()->routeIs('orders.index') ? 'active' : '' }}">
+                    🏠 หน้าแรก
+                </a>
+            </li>
+            <li>
+                <a href="{{ route('orders.create') }}" class="nav-link {{ request()->routeIs('orders.create') ? 'active' : '' }}">
+                     เครื่องดื่ม
                 </a>
             </li>
         </ul>
@@ -55,5 +58,18 @@
     </main>
 
     @yield('scripts')
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const storedCart = localStorage.getItem('coffee_shop_cart');
+            if (storedCart) {
+                try {
+                    const cartArr = JSON.parse(storedCart);
+                    const totalItems = cartArr.reduce((sum, item) => sum + item.quantity, 0);
+                    const navBadge = document.getElementById('navCartCount');
+                    if (navBadge) navBadge.textContent = totalItems;
+                } catch (e) {}
+            }
+        });
+    </script>
 </body>
 </html>
