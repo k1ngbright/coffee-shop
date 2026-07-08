@@ -18,13 +18,13 @@
 </head>
 <body>
     <nav class="navbar">
-        <a href="{{ route('orders.create') }}" class="navbar-brand">
+        <a href="{{ route('orders.index') }}" class="navbar-brand">
             <span class="logo">☕</span>
             <span>Coffee Shop</span>
         </a>
         <ul class="navbar-nav">
             <li>
-                <a href="{{ route('orders.create') }}" class="nav-link" style="color: var(--coffee-100);">
+                <a href="javascript:void(0);" onclick="toggleCart()" class="nav-link" style="color: var(--coffee-100);">
                     🛒 ตะกร้า <span id="navCartCount" class="badge" style="background: var(--danger); color: white; margin-left: 4px;">0</span>
                 </a>
             </li>
@@ -38,6 +38,37 @@
                      เครื่องดื่ม
                 </a>
             </li>
+            
+            @guest
+                <li>
+                    <a href="{{ route('login') }}" class="nav-link {{ request()->routeIs('login') ? 'active' : '' }}">
+                        เข้าสู่ระบบ
+                    </a>
+                </li>
+                <li>
+                    <a href="{{ route('register') }}" class="nav-link {{ request()->routeIs('register') ? 'active' : '' }}">
+                        สมัครสมาชิก
+                    </a>
+                </li>
+            @endguest
+            
+            @auth
+                <li>
+                    <span class="nav-link" style="color: var(--coffee-200); opacity: 0.8; cursor: default;">
+                        👤 {{ auth()->user()->name }}
+                    </span>
+                </li>
+                <li>
+                    <form method="POST" action="{{ route('logout') }}" style="display:inline;">
+                        @csrf
+                        <a href="{{ route('logout') }}" 
+                           onclick="event.preventDefault(); this.closest('form').submit();"
+                           class="nav-link" style="color: #fca5a5;">
+                            ออกจากระบบ
+                        </a>
+                    </form>
+                </li>
+            @endauth
         </ul>
     </nav>
 

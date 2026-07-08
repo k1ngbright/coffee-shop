@@ -1,138 +1,154 @@
 @extends('layouts.app')
 
-@section('title', 'รายการออเดอร์')
+@section('title', 'หน้าแรก - เมนูแนะนำ')
 
 @section('styles')
-<link rel="stylesheet" href="{{ asset('css/orders.css') }}">
+<style>
+    /* ตกแต่งแบนเนอร์ด้านบน */
+    .hero-section {
+        background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.4)), url('https://images.unsplash.com/photo-1509042239860-f550ce710b93?auto=format&fit=crop&q=80') center/cover;
+        color: white;
+        padding: 80px 20px;
+        border-radius: 15px;
+        text-align: center;
+        margin-bottom: 40px;
+        box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+    }
+    .hero-section h1 {
+        font-weight: 800;
+        font-size: 2.8rem;
+        margin-bottom: 10px;
+    }
+    .hero-section p {
+        font-size: 1.2rem;
+        color: #f8f9fa;
+        margin-bottom: 25px;
+    }
+    
+    /* ตกแต่งส่วนหัวข้อเมนูแนะนำ */
+    .section-title {
+        font-weight: 800;
+        border-left: 5px solid var(--coffee-600);
+        padding-left: 15px;
+        margin-bottom: 25px;
+        color: var(--coffee-900);
+    }
+
+    /* ตกแต่ง Grid เมนูแนะนำ */
+    .rec-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+        gap: 25px;
+        padding-bottom: 50px;
+    }
+    .rec-card {
+        background: white;
+        border-radius: 16px;
+        overflow: hidden;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+        transition: all 0.3s ease;
+        text-align: center;
+        padding-bottom: 20px;
+        border: 1px solid #f0f0f0;
+    }
+    .rec-card:hover {
+        transform: translateY(-8px);
+        box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+    }
+    .rec-img {
+        width: 100%;
+        height: 220px;
+        object-fit: cover;
+    }
+    .rec-name {
+        font-size: 1.25rem;
+        font-weight: 700;
+        margin: 15px 10px 5px;
+        color: var(--coffee-800);
+    }
+    .rec-price {
+        color: #d2691e;
+        font-weight: 800;
+        font-size: 1.2rem;
+        margin-bottom: 15px;
+    }
+    .btn-main {
+        background-color: var(--coffee-600);
+        color: white;
+        border: none;
+        padding: 12px 30px;
+        border-radius: 30px;
+        font-weight: 600;
+        text-decoration: none;
+        display: inline-block;
+        transition: 0.2s;
+    }
+    .btn-main:hover {
+        background-color: var(--coffee-800);
+        color: white;
+    }
+    .btn-outline {
+        border: 2px solid var(--coffee-600);
+        color: var(--coffee-600);
+        padding: 8px 25px;
+        border-radius: 20px;
+        font-weight: 600;
+        text-decoration: none;
+        display: inline-block;
+        transition: 0.2s;
+    }
+    .btn-outline:hover {
+        background-color: var(--coffee-600);
+        color: white;
+    }
+</style>
 @endsection
 
 @section('content')
-    {{-- Stats --}}
+    {{-- แบนเนอร์หน้าแรก --}}
+    <div class="hero-section">
+        <h1>☕ ยินดีต้อนรับสู่ Coffee Shop</h1>
+        <p>เริ่มต้นวันใหม่ด้วยกาแฟแก้วโปรดที่คุณสามารถปรับแต่งได้เอง</p>
+        <a href="{{ route('orders.create') }}" class="btn-main" style="font-size: 1.2rem;">
+            🛒 เริ่มสั่งเครื่องดื่มเลย
+        </a>
+    </div>
+
+    {{-- ดึงข้อมูลสินค้ามาแสดงเป็นเมนูแนะนำ (สุ่ม 4 รายการ) --}}
     @php
-        $allOrders = \App\Models\Order::selectRaw("
-            COUNT(*) as total,
-            SUM(CASE WHEN status = 'pending' THEN 1 ELSE 0 END) as pending,
-            SUM(CASE WHEN status = 'paid' THEN 1 ELSE 0 END) as paid,
-            SUM(CASE WHEN status = 'cancelled' THEN 1 ELSE 0 END) as cancelled
-        ")->first();
+        // เช็คว่ามีคลาส Product อยู่จริงเพื่อป้องกัน Error
+        if(class_exists('\App\Models\Product')) {
+            $recommendedProducts = \App\Models\Product::where('status', 1)->inRandomOrder()->take(4)->get();
+        } else {
+            $recommendedProducts = collect(); // ถ้าไม่มีให้เป็นค่าว่าง
+        }
     @endphp
 
-    <div class="order-stats">
-        <div class="stat-card">
-            <div class="stat-icon total">📦</div>
-            <div class="stat-info">
-                <div class="stat-value">{{ $allOrders->total ?? 0 }}</div>
-                <div class="stat-label">ออเดอร์ทั้งหมด</div>
-            </div>
+    <div class="container-fluid px-0">
+        <h3 class="section-title">⭐ เมนูแนะนำประจำวัน</h3>
+        
+        <div class="rec-grid">
+            @forelse($recommendedProducts as $product)
+                <div class="rec-card">
+                    @if($product->image)
+                        <img src="{{ asset('storage/' . $product->image) }}" alt="{{ $product->name }}" class="rec-img">
+                    @else
+                        <div class="rec-img" style="background: #f3ece7; display: flex; align-items: center; justify-content: center; font-size: 4rem;">☕</div>
+                    @endif
+                    
+                    <div class="rec-name">{{ $product->name }}</div>
+                    <div class="rec-price">฿{{ number_format($product->price, 0) }}</div>
+                    
+                    {{-- ปุ่มกดแล้ววิ่งไปหน้า POS --}}
+                    <a href="{{ route('orders.create') }}" class="btn-outline">สั่งเลย</a>
+                </div>
+            @empty
+                <div style="grid-column: 1 / -1; text-align: center; padding: 40px; background: white; border-radius: 12px;">
+                    <span style="font-size: 3rem;">📝</span>
+                    <h4 class="mt-3 text-muted">ยังไม่มีสินค้าในระบบ</h4>
+                    <p>กรุณาเพิ่มสินค้าหลังบ้านเพื่อให้แสดงเป็นเมนูแนะนำ</p>
+                </div>
+            @endforelse
         </div>
-        <div class="stat-card">
-            <div class="stat-icon pending">⏳</div>
-            <div class="stat-info">
-                <div class="stat-value">{{ $allOrders->pending ?? 0 }}</div>
-                <div class="stat-label">รอชำระ</div>
-            </div>
-        </div>
-        <div class="stat-card">
-            <div class="stat-icon paid">✅</div>
-            <div class="stat-info">
-                <div class="stat-value">{{ $allOrders->paid ?? 0 }}</div>
-                <div class="stat-label">ชำระแล้ว</div>
-            </div>
-        </div>
-        <div class="stat-card">
-            <div class="stat-icon cancelled">❌</div>
-            <div class="stat-info">
-                <div class="stat-value">{{ $allOrders->cancelled ?? 0 }}</div>
-                <div class="stat-label">ยกเลิก</div>
-            </div>
-        </div>
-    </div>
-
-    <div class="page-header">
-        <h1>📋 รายการออเดอร์</h1>
-        <div class="status-tabs">
-            <a href="{{ route('orders.index') }}" class="status-tab {{ !$status ? 'active' : '' }}">ทั้งหมด</a>
-            <a href="{{ route('orders.index', ['status' => 'pending']) }}" class="status-tab {{ $status === 'pending' ? 'active' : '' }}">⏳ รอชำระ</a>
-            <a href="{{ route('orders.index', ['status' => 'paid']) }}" class="status-tab {{ $status === 'paid' ? 'active' : '' }}">✅ ชำระแล้ว</a>
-            <a href="{{ route('orders.index', ['status' => 'cancelled']) }}" class="status-tab {{ $status === 'cancelled' ? 'active' : '' }}">❌ ยกเลิก</a>
-        </div>
-    </div>
-
-    <div class="orders-table-wrapper">
-        @if($orders->isEmpty())
-            <div class="empty-state">
-                <div class="empty-icon">📋</div>
-                <h3>ยังไม่มีออเดอร์</h3>
-                <p>เริ่มสร้างออเดอร์แรกกันเลย!</p>
-                <a href="{{ route('orders.create') }}" class="btn btn-primary" style="margin-top: 1rem;">🛒 สร้างออเดอร์</a>
-            </div>
-        @else
-            <table class="orders-table">
-                <thead>
-                    <tr>
-                        <th>เลขออเดอร์</th>
-                        <th>ลูกค้า</th>
-                        <th>รายการ</th>
-                        <th>ยอดรวม</th>
-                        <th>สถานะ</th>
-                        <th>เวลา</th>
-                        <th>จัดการ</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach($orders as $order)
-                        <tr>
-                            <td>
-                                <a href="{{ route('orders.show', $order) }}" class="order-number-link">
-                                    {{ $order->order_number }}
-                                </a>
-                            </td>
-                            <td>
-                                {{ $order->customer_name ?? '-' }}
-                                @if($order->customer_phone)
-                                    <br><span style="font-size: 0.75rem; color: var(--coffee-400);">{{ $order->customer_phone }}</span>
-                                @endif
-                            </td>
-                            <td>
-                                <div class="order-items-preview">
-                                    {{ $order->items->map(fn($i) => $i->product->name . ' x' . $i->quantity)->join(', ') }}
-                                </div>
-                            </td>
-                            <td class="order-total">฿{{ number_format($order->total, 0) }}</td>
-                            <td>
-                                <span class="badge badge-{{ $order->status_color }}">{{ $order->status_thai }}</span>
-                            </td>
-                            <td class="order-time">
-                                {{ $order->created_at->format('d/m/Y') }}<br>
-                                {{ $order->created_at->format('H:i') }}
-                            </td>
-                            <td>
-                                <div class="status-actions">
-                                    @if($order->status === 'pending')
-                                        <form method="POST" action="{{ route('orders.update-status', $order) }}" style="display:inline">
-                                            @csrf
-                                            @method('PATCH')
-                                            <input type="hidden" name="status" value="paid">
-                                            <button type="submit" class="status-action-btn pay">✅ ชำระแล้ว</button>
-                                        </form>
-                                        <form method="POST" action="{{ route('orders.update-status', $order) }}" style="display:inline">
-                                            @csrf
-                                            @method('PATCH')
-                                            <input type="hidden" name="status" value="cancelled">
-                                            <button type="submit" class="status-action-btn cancel" onclick="return confirm('ยืนยันยกเลิกออเดอร์นี้?')">❌ ยกเลิก</button>
-                                        </form>
-                                    @endif
-                                    <a href="{{ route('orders.show', $order) }}" class="btn btn-ghost btn-sm">📄 ดู</a>
-                                </div>
-                            </td>
-                        </tr>
-                    @endforeach
-                </tbody>
-            </table>
-
-            <div class="pagination-wrapper">
-                {{ $orders->withQueryString()->links() }}
-            </div>
-        @endif
     </div>
 @endsection
